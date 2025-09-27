@@ -16,3 +16,7 @@ create_app()
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/license')
+def license():
+    return render_template('license.html')
