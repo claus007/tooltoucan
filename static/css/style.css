@@ -1,10 +1,31 @@
 
 .main {
     margin-top: 3em;
-    border: 2px solid darkblue;
+    border: 2px solid #008074;
     padding: 1em;
     border-radius: 5px;
     background-color: beige;
+}
+
+.navigation {
+	max-width: 20%;
+    border-right: 1px solid darkblue;
+    padding-right: 1em;
+}
+
+.navigation ul
+{
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 1em;
+    margin-top: 0.5em;
+}
+
+.navigation ul li
+{
+    color: darkblue;
+    font-weight: bold;
+
 }
 
 body {

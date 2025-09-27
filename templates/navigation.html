@@ -1,0 +1,25 @@
+Navigation
+<ul>
+  {% for section in navigation.sections %}
+    <li>{{ section.name }}
+        {% for group in section.groups %}
+        <ul>
+            {% if group.name  %}
+            <li>{{ group.name }}
+            <ul>
+            {% endif %}
+            {% for group in section.groups %}
+            <li>
+                {% for link in group.links %}
+                    <a href="{{ link.url }}" target="{{ link.target }}">{{ link.name }}</a>
+                {% endfor %}
+            </li>
+            {% endfor%}
+            {% if group.name  %}
+            </ul>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </li>
+  {% endfor %}
+</ul>
