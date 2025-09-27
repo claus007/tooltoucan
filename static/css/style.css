@@ -1,7 +1,14 @@
 
 .main {
     margin-top: 3em;
-    border: 2px solid blue;
+    border: 2px solid darkblue;
     padding: 1em;
     border-radius: 5px;
+    background-color: beige;
+}
+
+body {
+    
+    background-position: fixed;
+    background-size: cover;
 }
