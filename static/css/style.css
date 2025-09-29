@@ -28,6 +28,12 @@
 
 }
 
+.forms td,
+.forms th {
+  padding-top: 8px; /* oben unten 8px, rechts links 12px */
+  padding-bottom: 8px;
+}
+
 body {
     
     background-position: fixed;

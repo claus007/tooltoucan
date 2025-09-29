@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Edit Link{% endblock %}
+{% block body %}
+  <h3>{{ form.caption }}</h3>
+  <table class="forms">
+  {% for field in form.fields %}
+  <tr>
+    <td>
+      {% if field.get_type() != "hidden" %}
+        <label for="{{ field.id }}">{{ field.name }} : </label>
+      {% endif %}
+    </td>
+    <td>
+  {% if field.get_type() == "text" %}
+    <input type="{{ field.get_type() }}" id="{{ field.id }}" name="{{ field.name }}" value="{% if field.value %}{{ field.value }}{% else %}{% endif %}" {% if field.required %}required{% endif %} {% if field.max_length > 100 %}size="70"{% endif %} class="formfield-{{ field.id }} formfield-{{ field.get_type() }}">
+  {% elif field.get_type() == "options" %}
+    <select id="{{ field.id }}" name="{{ field.name }}" {% if field.required %}required{% endif %} class="formfield-{{ field.id }} formfield-{{ field.get_type() }}">
+      {% for option in field.options %}
+        <option value="{{ option[0] }}" {% if option[0] == field.value %}selected{% endif %} class="formfield-{{ field.id }}-option formfield-{{ field.get_type() }}-option">{{ option[1] }}</option>
+      {% endfor %}
+    </select>
+  {% elif field.get_type() == "hidden" %}
+    <input type="hidden" id="{{ field.id }}" name="{{ field.name }}" value="{{ field.value }}">
+  {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+    <tr>
+      <td colspan="2">
+        <button type="submit" class="btn btn-primary form-submit"> Submit</button>
+      </td>
+    </tr>
+    </table>
+{% endblock %}
+
+{% block navigation %}
+{% include 'navigation.html' %}
+{% endblock %}

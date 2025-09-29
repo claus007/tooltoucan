@@ -4,8 +4,9 @@ from flask import Flask
 from flask import render_template
 from flaskr.db_con import connect_to_database;
 from flaskr.navigation import Navigation;
+from flaskr.forms import FormFields, Form
 
-navigation=None
+navigation = None
 
 def create_app():
     global app
@@ -32,3 +33,56 @@ def index():
 @app.route('/license')
 def license():
     return render_template('license.html',navigation=navigation)
+
+@app.route('/edit_link/<int:link_id>')
+def edit_link(link_id):
+    cursor=app.config['db_connection'].cursor(dictionary=True)
+    cursor.execute("SELECT idLinkCategory,lcName FROM LinkCategory order by idLinkCategory")
+    link_categories = cursor.fetchall()
+    categories = []
+    for row in link_categories:
+        categories.append( (row['idLinkCategory'], row['lcName']) )
+    cursor.close()
+    cursor=app.config['db_connection'].cursor(dictionary=True)
+    cursor.execute("SELECT dValue, dText FROM HTMLTarget ORDER BY idTarget;")
+    html_targets_cur = cursor.fetchall()
+    html_targets = []
+    for row in html_targets_cur:
+        html_targets.append( (row['dValue'], row['dText']) )
+    cursor.close()
+
+    form=Form("New Link","/edit_item",None,None)
+    form.add_field(FormFields.Hidden("LinkId","idLink",None))
+    form.add_field(FormFields.FixedOptions("Category","lCId",categories,"","true"))
+    form.add_field(FormFields.Text("Name","lName","","true",45,1,""))
+    form.add_field(FormFields.Text("URL","lUri","","true",2048,1,"https?://.+"))
+    form.add_field(FormFields.FixedOptions("Target","lDestination",html_targets,"","true"))
+    form.add_field(FormFields.Text("Description","lDescription","","false",2048,0,""))
+    form.add_field(FormFields.Text("Group","lGroup","","false",100,0,""))
+
+    if link_id is not None and link_id>0:
+        # Existing link
+        #form=Form("Edit Link","/edit_link","link_id",link_id)
+        form.caption = "Edit Link"
+        form.new = False
+        form.id_name = "idLink"
+        form.id_value = link_id
+        form.fields_dict["idLink"].value = link_id
+        # Load link data from database and fill the form fields
+        cursor=app.config['db_connection'].cursor(dictionary=True)
+        cursor.execute(f"""
+    SELECT idLink,idLinkCategory,lcName,lGroup,lName,dValue,lUri,lCId,lDescription,dValue,lDestination
+    FROM Link JOIN LinkCategory ON Link.lCId = LinkCategory.idLinkCategory
+            JOIN HTMLTarget ON Link.lDestination = HTMLTarget.idTarget  WHERE idLink = {link_id}
+    ORDER BY lcRank , lRank , lcName , lGroup , lName;
+    """)
+        row=cursor.fetchone()
+        if row is None:
+            return f"Link with ID {link_id} not found.", 404
+        form.fields_dict["lName"].value=row["lName"]
+        form.fields_dict["lUri"].value=row["lUri"]
+        form.fields_dict["lCId"].value=row["lCId"]
+        form.fields_dict["lDescription"].value=row["lDescription"]
+        form.fields_dict["lDestination"].value=row["lDestination"]
+        form.fields_dict["lGroup"].value=row["lGroup"]
+    return render_template('edit_item.html',navigation=navigation,form=form)
