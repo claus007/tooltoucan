@@ -1,4 +1,5 @@
 import os
+import re
 
 from flask import Flask
 from flask import render_template
@@ -85,4 +86,6 @@ def edit_link(link_id):
         form.fields_dict["lDescription"].value=row["lDescription"]
         form.fields_dict["lDestination"].value=row["lDestination"]
         form.fields_dict["lGroup"].value=row["lGroup"]
-    return render_template('edit_item.html',navigation=navigation,form=form)
+    result = render_template('edit_item.html',navigation=navigation,form=form)
+    result = re.sub(r"\n(\s*\n)+", "\n", result)
+    return result
