@@ -16,7 +16,7 @@ def create_app():
     app = Flask("ToolToucan", instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev'   )
-    success, error, connection = db_con.connect_to_database()
+    success, error, connection = connect_to_database()
     if success==False:
         print(f"Database connection failed with error: {error}")
         app.config['db_connection'] = None
