@@ -12,7 +12,17 @@
     </td>
     <td>
   {% if field.get_type() == "text" %}
-    <input type="{{ field.get_type() }}" id="{{ field.id }}" name="{{ field.name }}" value="{% if field.value %}{{ field.value }}{% else %}{% endif %}" {% if field.required %}required{% endif %} {% if field.max_length > 100 %}size="70"{% endif %} class="formfield-{{ field.id }} formfield-{{ field.get_type() }}">
+    <input
+      type="text"
+      id="{{ field.id }}"
+      name="{{ field.name }}"
+      {% if field.value %}
+      value="{{ field.value }}"
+      {% endif %}
+      {% if field.required %}required{% endif %}
+      {% if field.max_length > 100 %}size="70"{% endif %}
+      class="formfield-{{ field.id }} formfield-{{ field.get_type() }}">
+
   {% elif field.get_type() == "options" %}
     <select id="{{ field.id }}" name="{{ field.name }}" {% if field.required %}required{% endif %} class="formfield-{{ field.id }} formfield-{{ field.get_type() }}">
       {% for option in field.options %}
