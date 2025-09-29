@@ -1,5 +1,6 @@
 import os
 import re
+import typing as t
 
 from flask import Flask
 from flask import render_template
@@ -25,6 +26,12 @@ def create_app():
         navigation = Navigation().read(connection)
         
 create_app()
+
+def render_tt(template: str , **context: t.Any) -> str:
+    # ggf. Vorverarbeitung/login
+    result = render_template(template, **context)
+    result = re.sub(r"\n(\s*\n)+", "\n", result)
+    return result
 
 # a simple page that says hello
 @app.route('/')
@@ -86,6 +93,5 @@ def edit_link(link_id):
         form.fields_dict["lDescription"].value=row["lDescription"]
         form.fields_dict["lDestination"].value=row["lDestination"]
         form.fields_dict["lGroup"].value=row["lGroup"]
-    result = render_template('edit_item.html',navigation=navigation,form=form)
-    result = re.sub(r"\n(\s*\n)+", "\n", result)
-    return result
+    return render_tt('edit_item.html',navigation=navigation,form=form)
+
