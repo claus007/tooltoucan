@@ -16,7 +16,7 @@ import os
 import re
 import typing as t
 
-from flask import Flask
+from flask import Flask, request
 from flask import render_template
 from flaskr.db_con import connect_to_database;
 from flaskr.navigation import Navigation;
@@ -50,11 +50,11 @@ def render_tt(template: str , **context: t.Any) -> str:
 # a simple page that says hello
 @app.route('/')
 def index():
-    return render_template('index.html',navigation=navigation)
+    return render_tt('index.html',navigation=navigation)
 
 @app.route('/license')
 def license():
-    return render_template('license.html',navigation=navigation)
+    return render_tt('license.html',navigation=navigation)
 
 @app.route('/edit_link/<int:link_id>')
 def edit_link(link_id):
@@ -75,12 +75,12 @@ def edit_link(link_id):
 
     form=Form("New Link","/edit_item",None,None)
     form.add_field(FormFields.Hidden("LinkId","idLink",None))
-    form.add_field(FormFields.FixedOptions("Category","lCId",categories,"","true"))
-    form.add_field(FormFields.Text("Name","lName","","true",45,1,""))
-    form.add_field(FormFields.Text("URL","lUri","","true",2048,1,"https?://.+"))
-    form.add_field(FormFields.FixedOptions("Target","lDestination",html_targets,"","true"))
-    form.add_field(FormFields.Text("Description","lDescription","","false",2048,0,""))
-    form.add_field(FormFields.Text("Group","lGroup","","false",100,0,""))
+    form.add_field(FormFields.FixedOptions("Category","lCId",categories,"",True))
+    form.add_field(FormFields.Text("Name","lName","",True,45,1,""))
+    form.add_field(FormFields.Text("URL","lUri","",True,2048,1,"https?://.+"))
+    form.add_field(FormFields.FixedOptions("Target","lDestination",html_targets,"",True))
+    form.add_field(FormFields.Text("Description","lDescription","",False,2048,0,""))
+    form.add_field(FormFields.Text("Group","lGroup","",False,100,0,""))
 
     if link_id is not None and link_id>0:
         # Existing link
@@ -109,3 +109,9 @@ def edit_link(link_id):
         form.fields_dict["lGroup"].value=row["lGroup"]
     return render_tt('edit_item.html',navigation=navigation,form=form)
 
+@app.route('/save_to_db', methods=['POST'])
+def save_to_db():
+    if request.method != 'POST':
+        return render_template('index.html',navigation=navigation)
+    form_data = request.form
+    return render_template('index.html',navigation=navigation)

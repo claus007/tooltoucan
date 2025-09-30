@@ -35,8 +35,9 @@ class Navigation:
             self.links = []
             
     class Section:
-        def __init__(self, name):
+        def __init__(self, name, id):
             self.name = name
+            self.id = id
             self.groups = []
 
         def add_group(self, group):
@@ -49,12 +50,12 @@ class Navigation:
         nav = Navigation()
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM nav_view")
-        current_section = self.Section("") # empty section for comparison
+        current_section = self.Section("",0) # empty section for comparison
         current_group = self.Group("") # empty group for comparison
-        for (idLink, lcName, lGroup, lName, dValue, lUri, lDescription, lcDescription) in cursor:
+        for (idLink, lcId, lcName, lGroup, lName, dValue, lUri, lDescription, lcDescription) in cursor:
             if lcName != current_section.name:
                 # new section
-                current_section = self.Section(lcName)
+                current_section = self.Section(lcName, lcId)
                 nav.sections.append(current_section)
                 current_group = self.Group(lGroup)
                 current_section.add_group(current_group)

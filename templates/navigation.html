@@ -1,18 +1,19 @@
 Navigation<br>
-<span style="font-size: 0.8em;"><a href="edit_link/0">Add Link</a></span>
+<span style="font-size: 0.7em;"><a href="edit_section/0">[Add Section]</a> <a href="edit_link/0">[Add Link]</a></span>
 <ul>
   {% for section in navigation.sections %}
-    <li>{{ section.name }}
+    <li><a href="/section_list/{{ section.id }}" style="text-decoration: none; color: darkblue;">{{ section.name }}</a>
         {% for group in section.groups %}
         <ul>
             {% if group.name  %}
-            <li>{{ group.name }}
+            <li> {{ group.name }}
             <ul>
             {% endif %}
             {% for group in section.groups %}
             <li>
                 {% for link in group.links %}
-                    <a href="{{ link.url }}" target="{{ link.target }}">{{ link.name }}</a>
+                    <a href="{{ link.url }}" target="{{ link.target }}">{{ link.name }}</a>&nbsp;
+                    <!-- a href="/edit_item/{{ link.id }}"><img src="{{ url_for('static', filename='images/icons/wrench.svg') }}" style="height: 1em;" alt="Edit"></a-->
                 {% endfor %}
             </li>
             {% endfor%}

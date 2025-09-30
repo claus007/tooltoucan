@@ -2,6 +2,7 @@
 {% block title %}Edit Link{% endblock %}
 {% block body %}
   <h3>{{ form.caption }}</h3>
+  <form method="post" action="/save_to_db">
   <table class="forms">
   {% for field in form.fields %}
   <tr>
@@ -15,7 +16,7 @@
     <input
       type="text"
       id="{{ field.id }}"
-      name="{{ field.name }}"
+      name="{{ field.id }}"
       {% if field.value %}
       value="{{ field.value }}"
       {% endif %}
@@ -24,23 +25,26 @@
       class="formfield-{{ field.id }} formfield-{{ field.get_type() }}">
 
   {% elif field.get_type() == "options" %}
-    <select id="{{ field.id }}" name="{{ field.name }}" {% if field.required %}required{% endif %} class="formfield-{{ field.id }} formfield-{{ field.get_type() }}">
+    <select id="{{ field.id }}" name="{{ field.id }}" {% if field.required %}required{% endif %} class="formfield-{{ field.id }} formfield-{{ field.get_type() }}">
       {% for option in field.options %}
         <option value="{{ option[0] }}" {% if option[0] == field.value %}selected{% endif %} class="formfield-{{ field.id }}-option formfield-{{ field.get_type() }}-option">{{ option[1] }}</option>
       {% endfor %}
     </select>
   {% elif field.get_type() == "hidden" %}
-    <input type="hidden" id="{{ field.id }}" name="{{ field.name }}" value="{{ field.value }}">
+    <input type="hidden" id="{{ field.id }}" name="{{ field.id }}" value="{{ field.value }}">
   {% endif %}
     </td>
   </tr>
   {% endfor %}
     <tr>
       <td colspan="2">
+        <span style="text-align: right;">
         <button type="submit" class="btn btn-primary form-submit"> Submit</button>
+        </span>
       </td>
     </tr>
     </table>
+  </form>
 {% endblock %}
 
 {% block navigation %}
