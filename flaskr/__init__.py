@@ -115,3 +115,14 @@ def save_to_db():
         return render_template('index.html',navigation=navigation)
     form_data = request.form
     return render_template('index.html',navigation=navigation)
+
+@app.route('/section_list/<int:section_id>')
+def edit_section(section_id):
+    result_section = None
+    for section in navigation.sections:
+        if section.id == section_id:
+            result_section = section
+            break
+    if result_section is None:
+        return f"Section with ID {section_id} not found.", 404
+    return render_tt('section_list.html', navigation=navigation, section=result_section)

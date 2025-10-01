@@ -34,6 +34,11 @@
   padding-bottom: 8px;
 }
 
+.section-table td,
+.section-table th {
+  padding: 12px;
+}
+
 body {
     
     background-position: fixed;
