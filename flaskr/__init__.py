@@ -66,11 +66,11 @@ def edit_link(link_id):
         categories.append( (row['idLinkCategory'], row['lcName']) )
     cursor.close()
     cursor=app.config['db_connection'].cursor(dictionary=True)
-    cursor.execute("SELECT dValue, dText FROM HTMLTarget ORDER BY idTarget;")
+    cursor.execute("SELECT idTarget, dText FROM HTMLTarget ORDER BY idTarget;")
     html_targets_cur = cursor.fetchall()
     html_targets = []
     for row in html_targets_cur:
-        html_targets.append( (row['dValue'], row['dText']) )
+        html_targets.append( (row['idTarget'], row['dText']) )
     cursor.close()
 
     form=Form("New Link","/edit_item",None,None)
