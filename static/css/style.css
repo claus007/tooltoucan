@@ -1,10 +1,22 @@
 
+a 
+{
+    text-decoration: none;
+}
+
 .main {
     margin-top: 3em;
     border: 2px solid #008074;
     padding: 1em;
     border-radius: 5px;
     background-color: beige;
+}
+
+.action-image {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 0.5em;
 }
 
 .navigation {
