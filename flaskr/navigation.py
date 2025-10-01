@@ -18,8 +18,9 @@ class Navigation:
         self.sections = []
         
     class Link:
-        def __init__(self, name, url, target):
+        def __init__(self, name, id, url, target):
             self.name = name
+            self.id = id
             self.url = url
             self.target = target
             
@@ -65,7 +66,7 @@ class Navigation:
                 current_section.add_group(current_group)
 
             # add link to group
-            link = self.Link(lName, lUri, dValue)
+            link = self.Link(lName,idLink, lUri, dValue)
             current_group.add_link(link)
             
         cursor.close()
