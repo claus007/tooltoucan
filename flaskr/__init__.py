@@ -16,13 +16,20 @@ import os
 import re
 import typing as t
 
-from flask import Flask, request
+from flask import Flask, request, session, g
 from flask import render_template
-from flaskr.db_con import connect_to_database;
+from flaskr.db_con import get_db, connect_to_database
 from flaskr.navigation import Navigation;
 from flaskr.forms import FormFields, Form
 
 navigation = None
+
+def warning(msg: str):
+    session["warnings"].append(msg)
+def error(msg: str):
+    session["errors"].append(msg)
+def info(msg: str):
+    session["infos"].append(msg)
 
 def create_app():
     global app
@@ -30,42 +37,72 @@ def create_app():
     app = Flask("ToolToucan", instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev'   )
-    success, error, connection = connect_to_database()
-    if success==False:
-        print(f"Database connection failed with error: {error}")
-        app.config['db_connection'] = None
-    else:
-        app.config['db_connection'] = connection
-        global navigation
-        navigation = Navigation().read(connection)
         
 create_app()
 
+@app.before_request
+def before():
+    #success, error, connection = connect_to_database()
+    connection = get_db()
+    #if success==False:
+    if connection is None:
+        print(f"Database connection failed with error: {error}")
+        g.db = None
+    else:
+        g.db = connection
+
+@app.teardown_request
+def teardown(exception=None):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
+
 def render_tt(template: str , **context: t.Any) -> str:
-    # ggf. Vorverarbeitung/login
-    result = render_template(template, **context)
+    # Initialize navigation in the session if not present yet
+    # This ensures a session-backed navigation per user
+    if "errors" not in session:
+        session["errors"] = []
+    if "infos" not in session:
+        session["infos"] = []
+    if "warnings" not in session:
+        session["warnings"] = []
+
+    n = Navigation()
+    n.read(g.db)
+        
+    result = render_template(
+        template,
+        navigation=n,     # Pass navigation from session
+        errors=session.get("errors", []),     # Optional: pass other session data
+        infos=session.get("infos", []),
+        warnings=session.get("warnings", []),
+        **context
+    )
     result = re.sub(r"\n(\s*\n)+", "\n", result)
+    session["infos"] = []
+    session["errors"] = []
+    session["warnings"] = []
     return result
 
 # a simple page that says hello
 @app.route('/')
 def index():
-    return render_tt('index.html',navigation=navigation)
+    return render_tt('index.html')
 
 @app.route('/license')
 def license():
-    return render_tt('license.html',navigation=navigation)
+    return render_tt('license.html')
 
 @app.route('/edit_link/<int:link_id>', methods=['GET'])
 def edit_link(link_id):
-    cursor=app.config['db_connection'].cursor(dictionary=True)
+    cursor=g.db.cursor(dictionary=True)
     cursor.execute("SELECT idLinkCategory,lcName FROM LinkCategory order by idLinkCategory")
     link_categories = cursor.fetchall()
     categories = []
     for row in link_categories:
         categories.append( (row['idLinkCategory'], row['lcName']) )
     cursor.close()
-    cursor=app.config['db_connection'].cursor(dictionary=True)
+    cursor=g.db.cursor(dictionary=True)
     cursor.execute("SELECT idTarget, dText FROM HTMLTarget ORDER BY idTarget;")
     html_targets_cur = cursor.fetchall()
     html_targets = []
@@ -102,7 +139,7 @@ def edit_link(link_id):
         form.fields_dict["action"].value = "update"
         form.fields_dict["info"].value = form.caption
         # Load link data from database and fill the form fields
-        cursor=app.config['db_connection'].cursor(dictionary=True)
+        cursor=g.db.cursor(dictionary=True)
         cursor.execute(f"""
     SELECT idLink,idLinkCategory,lcName,lGroup,lName,dValue,lUri,lCId,lDescription,dValue,lDestination
     FROM Link JOIN LinkCategory ON Link.lCId = LinkCategory.idLinkCategory
@@ -118,7 +155,7 @@ def edit_link(link_id):
         form.fields_dict["lDescription"].value=row["lDescription"]
         form.fields_dict["lDestination"].value=row["lDestination"]
         form.fields_dict["lGroup"].value=row["lGroup"]
-    return render_tt('edit_item.html',navigation=navigation,form=form)
+    return render_tt('edit_item.html',form=form)
 
 def getAndRemove(d : dict, key: str, default=""):
     if key in d:
@@ -144,24 +181,32 @@ def save_to_db():
         values.append(value)
     fields_str = ",".join(fields)
     values_str = ",".join( [f"'{v.replace('\'','\'\'')}'" for v in values] )
-    cursor=app.config['db_connection'].cursor()
+    cursor=g.db.cursor()
     sql=""
     if action == "insert":
         sql = f"INSERT INTO {table} ({fields_str}) VALUES ({values_str})"
     elif action == "update":
         sql = f"UPDATE {table} SET " + ",".join( [f"{f}='{v.replace('\'','\'\'')}'" for f,v in zip(fields,values)] ) + f" WHERE {index}={index_value}"
-    cursor.execute(sql)
-    app.config['db_connection'].commit()
-    app.config['db_connection'].close()
-    return render_template('index.html',navigation=navigation)
+    try:
+        cursor.execute(sql)
+        g.db.commit()
+        info("Saved successfully.")
+    except Exception as e:
+        g.db.rollback()
+        error(f"Error saving to database: {e}")
+    finally:
+        g.db.close()
+    return render_tt('index.html')
 
 @app.route('/section_list/<int:section_id>')
 def edit_section(section_id):
     result_section = None
+    navigation = Navigation()
+    navigation.read(g.db)
     for section in navigation.sections:
         if section.id == section_id:
             result_section = section
             break
     if result_section is None:
         return f"Section with ID {section_id} not found.", 404
-    return render_tt('section_list.html', navigation=navigation, section=result_section)
+    return render_tt('section_list.html', section=result_section)

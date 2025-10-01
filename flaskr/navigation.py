@@ -12,19 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from dataclasses import dataclass
 
+@dataclass
 class Navigation:
+    sections: list
+
     def __init__(self):
         self.sections = []
-        
+    @dataclass        
     class Link:
         def __init__(self, name, id, url, target):
             self.name = name
             self.id = id
             self.url = url
             self.target = target
-            
+      
+    @dataclass      
     class Group:
+        name: str
+        links: list
+
         def __init__(self, name):
             self.name = name
             self.links = []
@@ -34,8 +42,12 @@ class Navigation:
             
         def clear_links(self):
             self.links = []
-            
+    @dataclass
     class Section:
+        name: str
+        id: int
+        groups: list
+
         def __init__(self, name, id):
             self.name = name
             self.id = id
@@ -48,7 +60,6 @@ class Navigation:
             self.groups = []
             
     def read(self,connection):
-        nav = Navigation()
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM nav_view")
         current_section = self.Section("",0) # empty section for comparison
@@ -57,7 +68,7 @@ class Navigation:
             if lcName != current_section.name:
                 # new section
                 current_section = self.Section(lcName, lcId)
-                nav.sections.append(current_section)
+                self.sections.append(current_section)
                 current_group = self.Group(lGroup)
                 current_section.add_group(current_group)
             elif lGroup != current_group.name:
@@ -70,4 +81,3 @@ class Navigation:
             current_group.add_link(link)
             
         cursor.close()
-        return nav
