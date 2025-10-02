@@ -238,7 +238,7 @@ def save_to_db():
     return render_tt('index.html')
 
 @app.route('/section_list/<int:section_id>')
-def edit_section(section_id):
+def section_list(section_id):
     result_section = None
     navigation = Navigation()
     navigation.read(g.db)

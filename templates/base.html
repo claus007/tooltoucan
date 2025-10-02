@@ -16,12 +16,7 @@
     <a href="/"><img src="{{ url_for('static', filename='images/logo.svg') }}" alt="ToolToucan Logo" width="150" height="150"></a> ToolToucan</h2>
   <hr>
   <a id="ttPageTop"></a>
-  <div class="row">
-    <div class="col navigation">
-      {% block navigation %}{% endblock %}
-    </div>
-    <div class="col">
-      {% for error in errors %}
+    {% for error in errors %}
         <div class="alert alert-danger" role="alert">{{ error }}</div>
       {% endfor %}
       {% for warning in warnings %}
@@ -30,6 +25,12 @@
       {% for info in infos %}
         <div class="alert alert-info" role="alert">{{ info }}</div>
       {% endfor %}
+  
+  <div class="row">
+    <div class="col navigation">
+      {% block navigation %}{% endblock %}
+    </div>
+    <div class="col">
   {% block body %}{% endblock %}
     </div>
   </div>
