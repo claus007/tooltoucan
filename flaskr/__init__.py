@@ -42,11 +42,11 @@ create_app()
 
 @app.before_request
 def before():
-    #success, error, connection = connect_to_database()
+    if request.path.startswith('/static/'): # No DB connection for static files
+        return
     connection = get_db()
-    #if success==False:
     if connection is None:
-        print(f"Database connection failed with error: {error}")
+        print(f"Database connection failed  for request to {request.path}")
         g.db = None
     else:
         g.db = connection
