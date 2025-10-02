@@ -30,7 +30,7 @@ def create_pool():
     try:
         pool = mysql.connector.pooling.MySQLConnectionPool(
             pool_name="ToolToucan_WebUI_Pool",
-            pool_size=20,
+            pool_size=32,
             pool_reset_session=True,
             host=db_config['host'].replace('"', ""),
             user=db_config['user'].replace('"', ""),
