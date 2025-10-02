@@ -10,13 +10,12 @@ Navigation<br>
             <ul>
             {% endif %}
             {% for group in section.groups %}
-            <li>
                 {% for link in group.links %}
-                    <a href="{{ link.url }}" target="{{ link.target }}">{{ link.name }}</a>&nbsp;
-                    <!-- a href="/edit_item/{{ link.id }}"><img src="{{ url_for('static', filename='images/icons/wrench.svg') }}" style="height: 1em;" alt="Edit"></a-->
+                <li>
+                    <a href="{{ link.url }}" target="{{ link.target }}">{{ link.name }}</a>
+                </li> 
                 {% endfor %}
-            </li>
-            {% endfor%}
+            {% endfor %}
             {% if group.name  %}
             </ul>
             {% endif %}
