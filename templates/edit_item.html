@@ -37,10 +37,14 @@
   </tr>
   {% endfor %}
     <tr>
-      <td colspan="2">
-        <span style="text-align: right;">
+      <td>
+      </td>
+      <td>
+        <div style="text-align: right;width:100%;">
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='/';">Start page</button>&nbsp;
+        <button type="button" class="btn btn-secondary" onclick="if (history.length > 1) { history.back(); } else { window.location.href = '/'; }">Back</button>&nbsp;
         <button type="submit" class="btn btn-primary form-submit"> Submit</button>
-        </span>
+        </div>
       </td>
     </tr>
     </table>
