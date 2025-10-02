@@ -163,6 +163,39 @@ def edit_link(link_id):
         cursor.close()
     return render_tt('edit_item.html',form=form)
 
+@app.route('/edit_section/<int:section_id>', methods=['GET'])
+def edit_section(section_id):
+
+    form=Form("New Section","/edit_section",None,None)
+    form.add_field(FormFields.Hidden("LinkCategory","idLinkCategory",None))
+    form.add_field(FormFields.Hidden("action","action","insert"))
+    form.add_field(FormFields.Hidden("table","table","LinkCategory"))
+    form.add_field(FormFields.Hidden("info","info",form.caption))
+    form.add_field(FormFields.Hidden("index","index","idLinkCategory"))
+    form.add_field(FormFields.Text("Name","lcName","",True,45,1,""))
+    form.add_field(FormFields.Text("Description","lcDescription","",False,2048,0,""))
+
+    if section_id > 0:
+        form.caption = "Edit Section"
+        form.new = False
+        form.id_name = "idLink"
+        form.id_value = section_id
+        form.fields_dict["idLinkCategory"].value = section_id
+        form.fields_dict["action"].value = "update"
+        form.fields_dict["info"].value = form.caption
+        # Load link data from database and fill the form fields
+        cursor=g.db.cursor(dictionary=True)
+        cursor.execute(f"SELECT * FROM LinkCategory WHERE idLinkCategory = {section_id}")
+        row=cursor.fetchone()
+        if row is None:
+            cursor.close()
+            return f"Section with ID {section_id} not found.", 404
+        form.fields_dict["lcName"].value=row["lcName"]
+        form.fields_dict["lcDescription"].value=row["lcDescription"]
+
+        cursor.close()
+    return render_tt('edit_item.html',form=form)
+
 def getAndRemove(d : dict, key: str, default=""):
     if key in d:
         value = d[key]
