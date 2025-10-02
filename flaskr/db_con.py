@@ -47,7 +47,8 @@ cnxpool = create_pool()
 def get_db():
     return cnxpool.get_connection()
 
-def connect_to_database():
+###
+# def connect_to_database():
     error=""
     config = configparser.ConfigParser()
     config.read(configFile)
@@ -73,3 +74,4 @@ def connect_to_database():
             error = err.msg
         
     return (False,error,None)
+###

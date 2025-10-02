@@ -18,7 +18,7 @@ import typing as t
 
 from flask import Flask, request, session, g
 from flask import render_template
-from flaskr.db_con import get_db, connect_to_database
+from flaskr.db_con import get_db
 from flaskr.navigation import Navigation;
 from flaskr.forms import FormFields, Form
 
@@ -101,13 +101,16 @@ def edit_link(link_id):
     categories = []
     for row in link_categories:
         categories.append( (row['idLinkCategory'], row['lcName']) )
+    
     cursor.close()
+    
     cursor=g.db.cursor(dictionary=True)
     cursor.execute("SELECT idTarget, dText FROM HTMLTarget ORDER BY idTarget;")
     html_targets_cur = cursor.fetchall()
     html_targets = []
     for row in html_targets_cur:
         html_targets.append( (row['idTarget'], row['dText']) )
+    
     cursor.close()
 
     form=Form("New Link","/edit_item",None,None)
@@ -148,6 +151,7 @@ def edit_link(link_id):
     """)
         row=cursor.fetchone()
         if row is None:
+            cursor.close()
             return f"Link with ID {link_id} not found.", 404
         form.fields_dict["lName"].value=row["lName"]
         form.fields_dict["lUri"].value=row["lUri"]
@@ -155,6 +159,7 @@ def edit_link(link_id):
         form.fields_dict["lDescription"].value=row["lDescription"]
         form.fields_dict["lDestination"].value=row["lDestination"]
         form.fields_dict["lGroup"].value=row["lGroup"]
+        cursor.close()
     return render_tt('edit_item.html',form=form)
 
 def getAndRemove(d : dict, key: str, default=""):
