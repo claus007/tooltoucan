@@ -21,6 +21,7 @@ from flask import render_template
 from flaskr.db_con import get_db
 from flaskr.navigation import Navigation;
 from flaskr.forms import FormFields, Form
+from mysql.connector import Error as MySQLError
 
 navigation = None
 
@@ -176,7 +177,7 @@ def save_to_db():
     form_data = request.form.to_dict(flat=True) # only the first item is of interest
     action= getAndRemove(form_data,"action","") # insert or update
     table= getAndRemove(form_data,"table","") # which table to perform action on
-    info = getAndRemove(form_data,"info","") # additional info, e.g. id of item to update
+    info_text = getAndRemove(form_data,"info","") # additional info, e.g. id of item to update
     index = getAndRemove(form_data,"index","")
     index_value = getAndRemove(form_data,index,"0")
     fields=[]
@@ -196,11 +197,11 @@ def save_to_db():
         cursor.execute(sql)
         g.db.commit()
         info("Saved successfully.")
-    except Exception as e:
+    except MySQLError as e:
         g.db.rollback()
         error(f"Error saving to database: {e}")
     finally:
-        g.db.close()
+        cursor.close()
     return render_tt('index.html')
 
 @app.route('/section_list/<int:section_id>')
