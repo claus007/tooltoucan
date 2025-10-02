@@ -9,13 +9,11 @@ Navigation<br>
             <li> {{ group.name }}
             <ul>
             {% endif %}
-            {% for group in section.groups %}
-                {% for link in group.links %}
+              {% for link in group.links %}
                 <li>
                     <a href="{{ link.url }}" target="{{ link.target }}">{{ link.name }}</a>
                 </li> 
-                {% endfor %}
-            {% endfor %}
+              {% endfor %}
             {% if group.name  %}
             </ul>
             {% endif %}
