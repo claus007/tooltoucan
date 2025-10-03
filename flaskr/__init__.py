@@ -80,6 +80,8 @@ def render_tt(template: str , **context: t.Any) -> str:
         **context
     )
     result = re.sub(r"\n(\s*\n)+", "\n", result)
+    result = re.sub("<hr>", "<hr/>", result)
+    result = re.sub("<br>", "<br/>", result)
     session["infos"] = []
     session["errors"] = []
     session["warnings"] = []
