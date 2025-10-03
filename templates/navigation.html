@@ -24,6 +24,7 @@ Navigation<br>
 <ul style="padding-inline-start: 0;">
   {% for section in navigation.sections %}
     <li  class="section" ><a href="/section_list/{{ section.id }}" style="text-decoration: none; ">{{ section.name }}</a>
+      <!-- section start -->
         {% for group in section.groups %}
         <ul>
           {{ do_group(group)}}
