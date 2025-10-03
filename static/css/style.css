@@ -27,21 +27,33 @@ a
 
 .navigation ul li.section
 {
-    /*
-    list-style-type: none;
-    padding-left: 0;
-    margin-bottom: 1em;
-    margin-top: 0.5em;
-    */
-    color: red;
+    color: darkblue;
+      list-style: none;
+  padding-left: 0;
 }
 
-.navigation ul li
+.navigation ul li.section a
 {
     color: darkblue;
     font-weight: bold;
-    /*list-style-image: url('/static/images/icons/arrow-right.svg');*/
+}
 
+.navigation ul li.section ul a
+{
+    color: blue;
+    font-weight: normal;
+}
+
+.navigation ul li.group
+{
+    /*color: pink;*/
+    font-style: italic;
+}
+
+.navigation ul li.group ul a
+{
+    /*color: green;*/
+    font-style: normal;
 }
 
 .forms td,
