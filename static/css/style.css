@@ -25,18 +25,22 @@ a
     padding-right: 1em;
 }
 
-.navigation ul
+.navigation ul li.section
 {
+    /*
     list-style-type: none;
     padding-left: 0;
     margin-bottom: 1em;
     margin-top: 0.5em;
+    */
+    color: red;
 }
 
 .navigation ul li
 {
     color: darkblue;
     font-weight: bold;
+    /*list-style-image: url('/static/images/icons/arrow-right.svg');*/
 
 }
 

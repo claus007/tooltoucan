@@ -2,11 +2,11 @@ Navigation<br>
 <span style="font-size: 0.7em;"><a href="/edit_section/0">[New Section]</a>&nbsp;<a href="/edit_link/0">[New Link]</a></span>
 <ul>
   {% for section in navigation.sections %}
-    <li><a href="/section_list/{{ section.id }}" style="text-decoration: none; color: darkblue;">{{ section.name }}</a>
+    <li  class="section" ><a href="/section_list/{{ section.id }}" style="text-decoration: none; color: darkblue;">{{ section.name }}</a>
         {% for group in section.groups %}
         <ul>
             {% if group.name  %}
-            <li> {{ group.name }}
+            <li  class="group"> {{ group.name }} <!-- group start -->
             <ul>
             {% endif %}
               {% for link in group.links %}
@@ -16,9 +16,10 @@ Navigation<br>
               {% endfor %}
             {% if group.name  %}
             </ul>
+          </li> <!-- group end -->
             {% endif %}
         {% endfor %}
         </ul>
-    </li>
+    </li> <!-- section end -->
   {% endfor %}
 </ul>
