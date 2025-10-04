@@ -108,11 +108,11 @@ def edit_link(link_id):
     cursor.close()
     
     cursor=g.db.cursor(dictionary=True)
-    cursor.execute("SELECT idTarget, dText FROM HTMLTarget ORDER BY idTarget;")
+    cursor.execute("SELECT idHtmlTarget, htText FROM HTMLTarget ORDER BY idHtmlTarget;")
     html_targets_cur = cursor.fetchall()
     html_targets = []
     for row in html_targets_cur:
-        html_targets.append( (row['idTarget'], row['dText']) )
+        html_targets.append( (row['idHtmlTarget'], row['htText']) )
     
     cursor.close()
 
@@ -122,10 +122,10 @@ def edit_link(link_id):
     form.add_field(FormFields.Hidden("table","table","Link"))
     form.add_field(FormFields.Hidden("info","info",form.caption))
     form.add_field(FormFields.Hidden("index","index","idLink"))
-    form.add_field(FormFields.FixedOptions("Category","lCId",categories,"",True))
+    form.add_field(FormFields.FixedOptions("Category","lcId",categories,"",True))
     form.add_field(FormFields.Text("Name","lName","",True,45,1,""))
     form.add_field(FormFields.Text("URL","lUri","",True,2048,1,"https?://.+"))
-    form.add_field(FormFields.FixedOptions("Target","lDestination",html_targets,"",True))
+    form.add_field(FormFields.FixedOptions("Target","htId",html_targets,"",True))
     form.add_field(FormFields.Text("Description","lDescription","",False,2048,0,""))
     form.add_field(FormFields.Text("Group","lGroup","",False,100,0,""))
 
@@ -133,7 +133,7 @@ def edit_link(link_id):
         if "section_id" in request.args:
             section_id=request.args.get("section_id")
             # pre-set section for new link(s)
-            form.fields_dict["lCId"].value = section_id
+            form.fields_dict["lcId"].value = section_id
     else:
         # Existing link
         #form=Form("Edit Link","/edit_link","link_id",link_id)
@@ -147,9 +147,9 @@ def edit_link(link_id):
         # Load link data from database and fill the form fields
         cursor=g.db.cursor(dictionary=True)
         cursor.execute(f"""
-    SELECT idLink,idLinkCategory,lcName,lGroup,lName,dValue,lUri,lCId,lDescription,dValue,lDestination
-    FROM Link JOIN LinkCategory ON Link.lCId = LinkCategory.idLinkCategory
-            JOIN HTMLTarget ON Link.lDestination = HTMLTarget.idTarget  WHERE idLink = {link_id}
+    SELECT idLink,idLinkCategory,lcName,lGroup,lName,htValue,lUri,lcId,lDescription,htId
+    FROM Link JOIN LinkCategory ON Link.lcId = LinkCategory.idLinkCategory
+            JOIN HTMLTarget ON Link.htId = HTMLTarget.idHtmlTarget  WHERE idLink = {link_id}
     ORDER BY lcRank , lRank , lcName , lGroup , lName;
     """)
         row=cursor.fetchone()
@@ -158,9 +158,9 @@ def edit_link(link_id):
             return f"Link with ID {link_id} not found.", 404
         form.fields_dict["lName"].value=row["lName"]
         form.fields_dict["lUri"].value=row["lUri"]
-        form.fields_dict["lCId"].value=row["lCId"]
+        form.fields_dict["lcId"].value=row["lcId"]
         form.fields_dict["lDescription"].value=row["lDescription"]
-        form.fields_dict["lDestination"].value=row["lDestination"]
+        form.fields_dict["htId"].value=row["htId"]
         form.fields_dict["lGroup"].value=row["lGroup"]
         cursor.close()
     return render_tt('edit_item.html',form=form)
