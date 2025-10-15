@@ -223,6 +223,7 @@ def save_to_db():
         values.append(value)
     fields_str = ",".join(fields)
     values_str = ",".join( [f"{v.replace("'","''")}" for v in values] )
+
     cursor=g.db.cursor()
     sql=""
     if action == "insert":
