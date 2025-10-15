@@ -231,7 +231,7 @@ def save_to_db():
     if action == "insert":
         sql = f"INSERT INTO {table} ({fields_str}) VALUES ({values_str})"
     elif action == "update":
-        sql = f"UPDATE {table} SET " + ",".join( [f"{f}='{v.replace('\'','\'\'')}'" for f,v in zip(fields,values)] ) + f" WHERE {index}={index_value}"
+        sql = f"UPDATE {table} SET " + ",".join( [f"{f}='{v.replace("'", "''")}'" for f,v in zip(fields,values)] ) + f" WHERE {index}={index_value}"
     try:
         cursor.execute(sql)
         g.db.commit()
