@@ -11,7 +11,7 @@
   <body style="background-image: url('{{ url_for('static', filename='images/jungle.jpg') }}');">
 
 <div class="container main">
-  
+  <a id="ttPageTop"></a>
   <h2>
     <a href="/">
       <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="ToolToucan Logo" width="150" height="150"/>
@@ -19,7 +19,6 @@
     ToolToucan
   </h2>
   <hr/>
-  <a id="ttPageTop"></a>
     {% for error in errors %}
         <div class="alert alert-danger" role="alert">{{ error }}</div>
       {% endfor %}

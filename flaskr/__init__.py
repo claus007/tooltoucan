@@ -122,7 +122,7 @@ def edit_link(link_id):
     form.add_field(FormFields.Hidden("table","table","Link"))
     form.add_field(FormFields.Hidden("info","info",form.caption))
     form.add_field(FormFields.Hidden("index","index","idLink"))
-    form.add_field(FormFields.FixedOptions("Category","lcId",categories,"",True))
+    form.add_field(FormFields.FixedOptions("Category","lcId",categories,0,True))
     form.add_field(FormFields.Text("Name","lName","",True,45,1,""))
     form.add_field(FormFields.Text("URL","lUri","",True,2048,1,"https?://.+"))
     form.add_field(FormFields.FixedOptions("Target","htId",html_targets,"",True))
@@ -133,7 +133,7 @@ def edit_link(link_id):
         if "section_id" in request.args:
             section_id=request.args.get("section_id")
             # pre-set section for new link(s)
-            form.fields_dict["lcId"].value = section_id
+            form.fields_dict["lcId"].value = int(section_id)
     else:
         # Existing link
         #form=Form("Edit Link","/edit_link","link_id",link_id)
@@ -155,6 +155,7 @@ def edit_link(link_id):
         row=cursor.fetchone()
         if row is None:
             cursor.close()
+            error(f"Unknown Link-Id {link_id}")
             return f"Link with ID {link_id} not found.", 404
         form.fields_dict["lName"].value=row["lName"]
         form.fields_dict["lUri"].value=row["lUri"]
