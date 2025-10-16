@@ -4,9 +4,19 @@
 
 ### Prerquisites
 
-1. Mysql
+1. Packages
+```
+sudo apt install git python3  mysql-server 
+```
 
-2. git
+2. Mysql
+
+Create the database.
+_As the database is still under heavy develop this section is not currently available._
+_My apologies_
+
+Create a restricted user for web access with the following permissions:
+`SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW, CREATE TEMPORARY TABLES`
 
 
 ### The files
@@ -76,3 +86,7 @@ Do a test run (optional)
 python -m flask --app flaskr run --port=6000
 ```
 
+### Deploying a production server
+
+As this documentation is very sophisticated, I will
+refer to the [Flask Documentation](https://flask.palletsprojects.com/en/stable/deploying/)
