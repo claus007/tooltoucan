@@ -223,7 +223,8 @@ def save_to_db():
         values.append(value)
     fields_str = ",".join(fields)
     #values_str = ",".join( [f"{v.replace("'","''")}" for v in values] )
-    escaped = [str(v).replace("'", "''") for v in values] 
+    #escaped = [str(v).replace("'", "''") for v in values] 
+    escaped = ["'"+str(v)+"'" for v in values] 
     values_str = ",".join(escaped) 
 
     cursor=g.db.cursor()
