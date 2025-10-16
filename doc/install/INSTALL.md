@@ -11,11 +11,10 @@ sudo apt install git python3  mysql-server
 
 2. Mysql
 
-Create the database.
-_As the database is still under heavy develop this section is not currently available._
-_My apologies_
+Create the database with executing the sql statements in `02_db_dump.sql`.
 
 Create a restricted user for web access with the following permissions:
+
 `SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW, CREATE TEMPORARY TABLES`
 
 
