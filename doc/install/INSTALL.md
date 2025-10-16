@@ -14,7 +14,7 @@
 Look for a place, where to store the application.
 In my case it is the `/opt` directory.
 If you choose another location, please replace the `/opt` with you choice.
-The `sudo` and `chown` are only necessary if you choose a directory outside of you home dirrectory.
+The `sudo` and `chown` are only necessary if you choose a directory outside of your home dirrectory.
 
 ```
 cd /opt
@@ -34,6 +34,7 @@ nano flaskr/secret_mysql_con.conf
 ```
 
 **... of the following form:**
+The redirection by `connection` may usefull if you have multiple database instances or users.
 
 ```
 [DEFAULT]
