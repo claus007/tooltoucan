@@ -66,6 +66,11 @@ a
 .section-table th {
   padding: 12px;
 }
+.section-table_list td,
+.section-table_list th {
+  padding: 12px;
+  background-color: transparent;
+}
 
 body {
     

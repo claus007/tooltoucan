@@ -23,7 +23,7 @@ Navigation<br>
 <span style="font-size: 0.7em;"><a href="/edit_section/0">[New Section]</a>&nbsp;<a href="/edit_link/0">[New Link]</a></span>
 <ul style="padding-inline-start: 0;">
   {% for section in navigation.sections %}
-    <li  class="section" ><a href="/section_list/{{ section.id }}" style="text-decoration: none; ">{{ section.name }}</a>
+    <li  class="section" ><a href="/section_nav/{{ section.id }}" style="text-decoration: none; ">{{ section.name }}</a>
       <!-- section start -->
         {% for group in section.groups %}
         <ul>

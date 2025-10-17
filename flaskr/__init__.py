@@ -166,6 +166,21 @@ def edit_link(link_id):
         cursor.close()
     return render_tt('edit_item.html',form=form)
 
+@app.route('/section_nav/<int:section_id>', methods=['GET'])
+def list_section(section_id):
+    n = Navigation()
+    n.read(g.db)
+    section=None
+    for s in n.sections:
+        if (s.id==section_id):
+            section=s
+            
+    if (section == None ):
+        error(f"Section Id not found {section_id}")
+        return render_tt('index.html')
+        
+    return render_tt('list_section.html',section=section)
+
 @app.route('/edit_section/<int:section_id>', methods=['GET'])
 def edit_section(section_id):
 

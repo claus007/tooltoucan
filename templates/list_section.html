@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{{ section.name }}{% endblock %}
+{% block body %}
+  <div style="margin-bottom: 2em;">
+  <h3>{{ section.name }} <a href="/section_list/{{ section.id }}"><img src="{{ url_for('static', filename='images/icons/pencil_square.svg') }}" class="action-image" alt="Edit"></a></h3>
+  {{ section.description|safe }}
+  </div>
+  <table class="table section-table_list" style="background-color: transparent;">
+  <col style="">
+  <col style="width: 100%;">
+  <col style="">
+    <tbody>
+    {% for group in section.groups %}
+      {% for link in group.links %}
+      <tr>
+        {% if loop.first %}
+            <td rowspan={{group.links|length}}>{{ group.name }}</td>
+        {% endif %}
+        <td><span style="font-weight: bold; font-size: 1.2em;white-space: nowrap;"><a href="{{ link.url }}" target="{{ link.target }}" >{{ link.name }}</a></span><br>
+            {{ link.description|safe }}
+        </td>
+      </tr>
+      {% endfor %}
+    {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}
+
+{% block navigation %}
+{% include 'navigation.html' %}
+{% endblock %}
