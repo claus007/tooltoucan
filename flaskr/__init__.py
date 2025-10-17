@@ -220,25 +220,23 @@ def save_to_db():
     values=[]
     for key, value in form_data.items():
         fields.append(key)
-        values.append(value)
-    fields_str = ",".join(fields)
-    #values_str = ",".join( [f"{v.replace("'","''")}" for v in values] )
-    #escaped = [str(v).replace("'", "''") for v in values] 
-    escaped = ["'"+str(v)+"'" for v in values] 
-    values_str = ",".join(escaped) 
+        values.append(str(value))
+    
+    
 
     cursor=g.db.cursor()
     sql=""
     if action == "insert":
-        sql = f"INSERT INTO {table} ({fields_str}) VALUES ({values_str})"
-    elif action == "update":
+        fields_str = ",".join(fields)
+        values_placeholder=", ".join(["%s"] * len(values))
+        sql = f"INSERT INTO {table} ({fields_str}) VALUES ({values_placeholder})"
         
-        escaped_values = [str(v).replace("'", "''") for v in values]
-        updates = ",".join([f"{f}='{ev}'" for f, ev in zip(fields, escaped_values)]) 
+    elif action == "update":
+        updates = ",".join([f"{f}='%s'" for f in fields]) 
 
         sql = f"UPDATE {table} SET {updates} WHERE {index}={index_value}"
     try:
-        cursor.execute(sql)
+        cursor.execute(sql,values)
         g.db.commit()
         info("Saved successfully.")
     except MySQLError as e:
